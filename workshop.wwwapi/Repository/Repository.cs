@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using workshop.wwwapi.Data;
+using workshop.wwwapi.DTOs;
 using workshop.wwwapi.Models;
 
 namespace workshop.wwwapi.Repository
@@ -22,6 +23,19 @@ namespace workshop.wwwapi.Repository
         public async Task<IEnumerable<Appointment>> GetAppointmentsByDoctor(int id)
         {
             return await _databaseContext.Appointments.Where(a => a.DoctorId==id).ToListAsync();
+        }
+
+        public async Task<Patient> GetPatients(int id)
+        {
+            return await _databaseContext.Patients.FindAsync(id);
+        }
+
+        public async Task<Patient> CreatePatient(PatientPost patient)
+        {
+            var newPatient = new Patient() { FullName = patient.FullName };
+            await _databaseContext.Patients.AddAsync(newPatient);
+            _databaseContext.SaveChanges();
+            return newPatient;
         }
     }
 }
