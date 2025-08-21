@@ -15,8 +15,8 @@ namespace workshop.wwwapi.Models
         [Column("patient_id")]
         public int PatientId { get; set; }
         public Patient Patient { get; set; }
-        [Column("booking_date")]
-        public DateTime Booking { get; set; }
+        [Column("appointment_date")]
+        public DateTime AppointmentDate { get; set; }
 
     }
 }

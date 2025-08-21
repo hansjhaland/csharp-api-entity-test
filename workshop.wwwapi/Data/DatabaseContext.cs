@@ -20,12 +20,25 @@ namespace workshop.wwwapi.Data
             //modelBuilder.Entity<Appointment>().HasKey(a => new { a.DoctorId, a.PatientId } );
 
             //TODO: Seed Data Here
+            // Patients:
             Patient patient1 = new Patient() { Id = 1, FullName = "Bob John" };
             Patient patient2 = new Patient() { Id = 2, FullName = "John Bob" };
-            List<Patient> patients = new List<Patient>() { patient1, patient2 };
-
+            Patient patient3 = new Patient() { Id = 3, FullName = "Walter White" };
+            List<Patient> patients = new List<Patient>() { patient1, patient2, patient3 };
             modelBuilder.Entity<Patient>().HasData(patients);
 
+            //Doctors
+            Doctor doctor1 = new Doctor() { Id = 1, FullName = "Nigel" };
+            Doctor doctor2 = new Doctor() { Id = 2, FullName = "Dave" };
+            List<Doctor> doctors = new List<Doctor>() { doctor1, doctor2 };
+            modelBuilder.Entity<Doctor>().HasData(doctors);
+
+            // Appointments
+            Appointment appointment1 = new Appointment() { AppointmentId = 1, DoctorId = 1, PatientId = 1, AppointmentDate = DateTime.UtcNow };
+            Appointment appointment2 = new Appointment() { AppointmentId = 2, DoctorId = 1, PatientId = 2, AppointmentDate = DateTime.UtcNow };
+            Appointment appointment3 = new Appointment() { AppointmentId = 3, DoctorId = 2, PatientId = 3, AppointmentDate = DateTime.UtcNow };
+            List<Appointment> appointments = new List<Appointment>() { appointment1, appointment2, appointment3};
+            modelBuilder.Entity<Appointment>().HasData(appointments);
 
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
