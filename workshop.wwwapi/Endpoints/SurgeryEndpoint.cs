@@ -17,6 +17,8 @@ namespace workshop.wwwapi.Endpoints
             surgeryGroup.MapGet("/patients/{id}", GetPatient);
             surgeryGroup.MapPost("/patients", CreatePatient);
             surgeryGroup.MapGet("/doctors", GetDoctors);
+            surgeryGroup.MapGet("/doctors/{id}", GetDoctor);
+            //surgeryGroup.MapPost("/doctors/{id}", CreateDoctor);
             surgeryGroup.MapGet("/appointmentsbydoctor/{id}", GetAppointmentsByDoctor);
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -34,7 +36,7 @@ namespace workshop.wwwapi.Endpoints
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public static async Task<IResult> GetPatient(IRepository repository, int id)
         {
-            var entity = await repository.GetPatients(id);
+            var entity = await repository.GetPatient(id);
             if (entity is null) return TypedResults.NotFound();
             var result = new PatientGet() { FullName = entity.FullName };
             return TypedResults.Ok(result);
@@ -51,7 +53,42 @@ namespace workshop.wwwapi.Endpoints
         [ProducesResponseType(StatusCodes.Status200OK)]
         public static async Task<IResult> GetDoctors(IRepository repository)
         {
-            return TypedResults.Ok(await repository.GetPatients());
+            var response = await repository.GetDoctors();
+            List<Object> result = new List<Object>();
+            foreach (var entity in response)
+            {
+                var doctor = new DoctorGet() { FullName = entity.FullName };
+                foreach (var appointment in entity.Appointments)
+                {
+                    doctor.Appointments.Add(new DoctorAppointmentGet() { 
+                        PatientId = appointment.PatientId, 
+                        PatientName = appointment.Patient.FullName, 
+                        AppointmentDate = appointment.AppointmentDate 
+                    });
+                }
+                result.Add(doctor);
+            }
+            return TypedResults.Ok(result);
+        }
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public static async Task<IResult> GetDoctor(IRepository repository, int id)
+        {
+            var entity = await repository.GetDoctor(id);
+            if (entity is null) return TypedResults.NotFound();
+
+
+            var doctor = new DoctorGet() { FullName = entity.FullName };
+            foreach (var appointment in entity.Appointments)
+            {
+                doctor.Appointments.Add(new DoctorAppointmentGet()
+                {
+                    PatientId = appointment.PatientId,
+                    PatientName = appointment.Patient.FullName,
+                    AppointmentDate = appointment.AppointmentDate
+                });
+            }
+            return TypedResults.Ok(doctor);
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         public static async Task<IResult> GetAppointmentsByDoctor(IRepository repository, int id)
