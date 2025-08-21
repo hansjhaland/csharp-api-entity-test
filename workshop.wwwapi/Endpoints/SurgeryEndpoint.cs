@@ -18,7 +18,7 @@ namespace workshop.wwwapi.Endpoints
             surgeryGroup.MapPost("/patients", CreatePatient);
             surgeryGroup.MapGet("/doctors", GetDoctors);
             surgeryGroup.MapGet("/doctors/{id}", GetDoctor);
-            //surgeryGroup.MapPost("/doctors/{id}", CreateDoctor);
+            surgeryGroup.MapPost("/doctors", CreateDoctor);
             surgeryGroup.MapGet("/appointmentsbydoctor/{id}", GetAppointmentsByDoctor);
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -89,6 +89,15 @@ namespace workshop.wwwapi.Endpoints
                 });
             }
             return TypedResults.Ok(doctor);
+        }
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public static async Task<IResult> CreateDoctor(IRepository repository, DoctorPost doctor)
+        {
+            if (doctor.FullName == "") return TypedResults.BadRequest();
+            var entity = repository.CreateDoctor(doctor);
+            return TypedResults.Created();
+
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         public static async Task<IResult> GetAppointmentsByDoctor(IRepository repository, int id)
