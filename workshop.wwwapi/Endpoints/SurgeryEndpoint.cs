@@ -19,8 +19,40 @@ namespace workshop.wwwapi.Endpoints
             surgeryGroup.MapGet("/doctors", GetDoctors);
             surgeryGroup.MapGet("/doctors/{id}", GetDoctor);
             surgeryGroup.MapPost("/doctors", CreateDoctor);
+            surgeryGroup.MapGet("/appointments", GetAppointments);
+            surgeryGroup.MapGet("/appointments/{id}", GetAppointment);
+            surgeryGroup.MapGet("/appointmentsbypatient/{id}", GetAppointmentsByPatient);
             surgeryGroup.MapGet("/appointmentsbydoctor/{id}", GetAppointmentsByDoctor);
         }
+
+        private static async Task<IResult> GetAppointmentsByPatient(HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task<IResult> GetAppointment(HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task<IResult> GetAppointments(IRepository repository)
+        {
+            var response = await repository.GetAppointments();
+            List<Object> result = new List<Object>();
+            foreach (var entity in response)
+            {
+                result.Add(new AppointmentGet()
+                {
+                    DoctorId = entity.DoctorId,
+                    DoctorName = entity.Doctor.FullName,
+                    PatientId = entity.PatientId,
+                    PatientName = entity.Patient.FullName,
+                    AppointmentDate = entity.AppointmentDate
+                });
+            }
+            return TypedResults.Ok(result);
+        }
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         public static async Task<IResult> GetPatients(IRepository repository)
         {

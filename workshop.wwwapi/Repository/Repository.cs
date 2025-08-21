@@ -50,5 +50,10 @@ namespace workshop.wwwapi.Repository
             _databaseContext.SaveChanges();
             return newDoctor;
         }
+
+        public async Task<IEnumerable<Appointment>> GetAppointments()
+        {
+            return await _databaseContext.Appointments.Include(a => a.Doctor).Include(a => a.Patient).ToListAsync();
+        }
     }
 }
