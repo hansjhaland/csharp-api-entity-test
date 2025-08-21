@@ -69,7 +69,7 @@ namespace workshop.wwwapi.Endpoints
         public static async Task<IResult> CreatePatient(IRepository repository, PatientPost patient) 
         { 
             if (patient.FullName == "") return TypedResults.BadRequest();
-            var entity = repository.CreatePatient(patient);
+            var entity = await repository.CreatePatient(patient);
             return TypedResults.Created();
             
         }
@@ -118,9 +118,8 @@ namespace workshop.wwwapi.Endpoints
         public static async Task<IResult> CreateDoctor(IRepository repository, DoctorPost doctor)
         {
             if (doctor.FullName == "") return TypedResults.BadRequest();
-            var entity = repository.CreateDoctor(doctor);
+            var entity = await repository.CreateDoctor(doctor);
             return TypedResults.Created();
-
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         public static async Task<IResult> GetAppointmentsByDoctor(IRepository repository, int id)
