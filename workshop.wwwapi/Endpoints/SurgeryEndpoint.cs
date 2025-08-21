@@ -28,7 +28,17 @@ namespace workshop.wwwapi.Endpoints
             List<Object> result = new List<Object>();
             foreach (var entity in response)
             {
-                result.Add(new PatientGet() { FullName = entity.FullName });
+                var patient = new PatientGet() { FullName = entity.FullName };
+                foreach (var appointment in entity.Appointments)
+                {
+                    patient.Appointments.Add(new PatientAppointmentGet()
+                    {
+                        DoctorId = appointment.DoctorId,
+                        DoctorName = appointment.Doctor.FullName,
+                        AppointmentDate = appointment.AppointmentDate
+                    });
+                }
+                result.Add(patient);
             }
             return TypedResults.Ok(result);
         }
@@ -36,10 +46,23 @@ namespace workshop.wwwapi.Endpoints
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public static async Task<IResult> GetPatient(IRepository repository, int id)
         {
-            var entity = await repository.GetPatient(id);
-            if (entity is null) return TypedResults.NotFound();
-            var result = new PatientGet() { FullName = entity.FullName };
-            return TypedResults.Ok(result);
+            {
+                var entity = await repository.GetPatient(id);
+                if (entity is null) return TypedResults.NotFound();
+
+
+                var patient = new PatientGet() { FullName = entity.FullName };
+                foreach (var appointment in entity.Appointments)
+                {
+                    patient.Appointments.Add(new PatientAppointmentGet()
+                    {
+                        DoctorId = appointment.Doctor.Id,
+                        DoctorName = appointment.Doctor.FullName,
+                        AppointmentDate = appointment.AppointmentDate
+                    });
+                }
+                return TypedResults.Ok(patient);
+            }
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

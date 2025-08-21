@@ -14,7 +14,7 @@ namespace workshop.wwwapi.Repository
         }
         public async Task<IEnumerable<Patient>> GetPatients()
         {
-            return await _databaseContext.Patients.ToListAsync();
+            return await _databaseContext.Patients.Include(p => p.Appointments).ThenInclude(a => a.Doctor).ToListAsync();
         }
         public async Task<IEnumerable<Doctor>> GetDoctors()
         {
@@ -27,7 +27,7 @@ namespace workshop.wwwapi.Repository
 
         public async Task<Patient> GetPatient(int id)
         {
-            return await _databaseContext.Patients.FindAsync(id);
+            return await _databaseContext.Patients.Where(p => p.Id == id).Include(p => p.Appointments).ThenInclude(a => a.Doctor).FirstOrDefaultAsync();
         }
 
         public async Task<Patient> CreatePatient(PatientPost patient)
