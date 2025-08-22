@@ -34,7 +34,7 @@ namespace workshop.wwwapi.Repository
         {
             var newPatient = new Patient() { FullName = patient.FullName };
             await _databaseContext.Patients.AddAsync(newPatient);
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
             return newPatient;
         }
 
@@ -47,7 +47,7 @@ namespace workshop.wwwapi.Repository
         {
             var newDoctor = new Doctor() { FullName = doctor.FullName };
             await _databaseContext.Doctors.AddAsync(newDoctor);
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
             return newDoctor;
         }
 
@@ -76,7 +76,7 @@ namespace workshop.wwwapi.Repository
                 AppointmentDate = DateTime.UtcNow
             };
             await _databaseContext.Appointments.AddAsync(newAppointment);
-            _databaseContext.SaveChangesAsync();
+            await _databaseContext.SaveChangesAsync();
             return newAppointment;
 
         }
