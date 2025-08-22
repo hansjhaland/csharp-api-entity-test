@@ -58,7 +58,27 @@ namespace workshop.wwwapi.Repository
 
         public async Task<Appointment> GetAppointment(int id)
         {
-            return await _databaseContext.Appointments.Where(d => d.PatientId == id).Include(a => a.Doctor).Include(a => a.Patient).FirstOrDefaultAsync();
+            return await _databaseContext.Appointments.Where(d => d.AppointmentId == id).Include(a => a.Doctor).Include(a => a.Patient).FirstOrDefaultAsync();
+        }
+
+        public async Task<Appointment> CreateAppointment(AppointmentPost appointment)
+        {
+            var appointmentDoctor = await _databaseContext.Doctors.Where(d => d.Id == appointment.DoctorId).FirstOrDefaultAsync();
+            if (appointmentDoctor == null) return null;
+            var appointmentPatient = await _databaseContext.Patients.Where(p => p.Id == appointment.PatientId).FirstOrDefaultAsync();
+            if (appointmentPatient == null) return null;
+            var newAppointment = new Appointment()
+            {
+                DoctorId = appointment.DoctorId,
+                Doctor = appointmentDoctor,
+                PatientId = appointment.PatientId,
+                Patient = appointmentPatient,
+                AppointmentDate = DateTime.UtcNow
+            };
+            await _databaseContext.Appointments.AddAsync(newAppointment);
+            _databaseContext.SaveChangesAsync();
+            return newAppointment;
+
         }
     }
 }

@@ -21,8 +21,16 @@ namespace workshop.wwwapi.Endpoints
             surgeryGroup.MapPost("/doctors", CreateDoctor);
             surgeryGroup.MapGet("/appointments", GetAppointments);
             surgeryGroup.MapGet("/appointments/{id}", GetAppointment);
+            surgeryGroup.MapPost("/appointments", CreateAppointment);
             surgeryGroup.MapGet("/appointmentsbypatient/{id}", GetAppointmentsByPatient);
             surgeryGroup.MapGet("/appointmentsbydoctor/{id}", GetAppointmentsByDoctor);
+        }
+
+        private static async Task<IResult> CreateAppointment(IRepository repository, AppointmentPost appointment) 
+        {
+            var entity = await repository.CreateAppointment(appointment);
+            if (entity is null) return TypedResults.BadRequest();
+            return TypedResults.Created();
         }
 
         private static async Task<IResult> GetAppointmentsByPatient(HttpContext context)
