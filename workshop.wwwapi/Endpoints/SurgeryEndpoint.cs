@@ -30,9 +30,19 @@ namespace workshop.wwwapi.Endpoints
             throw new NotImplementedException();
         }
 
-        private static async Task<IResult> GetAppointment(HttpContext context)
+        private static async Task<IResult> GetAppointment(IRepository repository, int id)
         {
-            throw new NotImplementedException();
+            var entity = await repository.GetAppointment(id);
+            if (entity is null) return TypedResults.NotFound();
+            var result = new AppointmentGet()
+            {
+                DoctorId = entity.DoctorId,
+                DoctorName = entity.Doctor.FullName,
+                PatientId = entity.PatientId,
+                PatientName = entity.Patient.FullName,
+                AppointmentDate = entity.AppointmentDate,
+            };
+            return TypedResults.Ok(result);
         }
 
         private static async Task<IResult> GetAppointments(IRepository repository)
