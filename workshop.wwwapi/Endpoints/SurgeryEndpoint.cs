@@ -188,11 +188,21 @@ namespace workshop.wwwapi.Endpoints
         [ProducesResponseType(StatusCodes.Status200OK)]
         public static async Task<IResult> GetAppointmentsByDoctor(IRepository repository, int id)
         {
-            //var entity = await repository.GetAppointmentsByDoctor(id);
-            
+            var response = await repository.GetAppointmentsByDoctor(id);
+            var result = new List<AppointmentGet>();
+            foreach (var appointment in response)
+            {
+                result.Add(new AppointmentGet()
+                {
+                    PatientId = appointment.PatientId,
+                    PatientName = appointment.Patient.FullName,
+                    DoctorId = appointment.DoctorId,
+                    DoctorName = appointment.Doctor.FullName,
+                    AppointmentDate = appointment.AppointmentDate,
+                });
+            }
 
-            //return TypedResults.Ok(result);
-            throw new NotImplementedException();
+            return TypedResults.Ok(result);
         }
     }
 }

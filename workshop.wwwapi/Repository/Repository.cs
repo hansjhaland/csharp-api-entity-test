@@ -22,7 +22,7 @@ namespace workshop.wwwapi.Repository
         }
         public async Task<IEnumerable<Appointment>> GetAppointmentsByDoctor(int id)
         {
-            return await _databaseContext.Appointments.Where(a => a.DoctorId==id).ToListAsync();
+            return await _databaseContext.Appointments.Where(a => a.DoctorId==id).Include(a => a.Doctor).Include(a => a.Patient).ToListAsync();
         }
 
         public async Task<Patient> GetPatient(int id)
