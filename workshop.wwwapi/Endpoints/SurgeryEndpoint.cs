@@ -33,9 +33,23 @@ namespace workshop.wwwapi.Endpoints
             return TypedResults.Created();
         }
 
-        private static async Task<IResult> GetAppointmentsByPatient(HttpContext context)
+        private static async Task<IResult> GetAppointmentsByPatient(IRepository repository, int id)
         {
-            throw new NotImplementedException();
+            var response = await repository.GetAppointmentsByPatient(id);
+            var result = new List<AppointmentGet>();
+            foreach (var appointment in response)
+            {
+                result.Add(new AppointmentGet() 
+                {
+                    PatientId = appointment.PatientId,
+                    PatientName = appointment.Patient.FullName,
+                    DoctorId = appointment.DoctorId,
+                    DoctorName = appointment.Doctor.FullName,
+                    AppointmentDate = appointment.AppointmentDate,
+                });
+            }
+
+            return TypedResults.Ok(result);
         }
 
         private static async Task<IResult> GetAppointment(IRepository repository, int id)
@@ -174,7 +188,11 @@ namespace workshop.wwwapi.Endpoints
         [ProducesResponseType(StatusCodes.Status200OK)]
         public static async Task<IResult> GetAppointmentsByDoctor(IRepository repository, int id)
         {
-            return TypedResults.Ok(await repository.GetAppointmentsByDoctor(id));
+            //var entity = await repository.GetAppointmentsByDoctor(id);
+            
+
+            //return TypedResults.Ok(result);
+            throw new NotImplementedException();
         }
     }
 }

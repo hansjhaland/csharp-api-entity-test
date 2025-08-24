@@ -80,5 +80,10 @@ namespace workshop.wwwapi.Repository
             return newAppointment;
 
         }
+
+        public async Task<IEnumerable<Appointment>> GetAppointmentsByPatient(int id)
+        {
+            return await _databaseContext.Appointments.Where(a => a.PatientId == id).Include(a => a.Patient).Include(a => a.Doctor).ToListAsync();
+        }
     }
 }
